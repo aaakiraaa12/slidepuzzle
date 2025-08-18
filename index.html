@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>できるんです！パズル</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            touch-action: manipulation;
+            padding: 10px;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        h2 {
+            color: #555;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px 25px;
+            margin: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            min-width: 120px;
+            touch-action: manipulation;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .difficulty-buttons .button {
+            display: block;
+            width: 100%;
+            margin: 10px auto;
+        }
+
+        .difficulty-buttons .button.easy { 
+            background: linear-gradient(45deg, #2ecc71, #27ae60); 
+        }
+        
+        .difficulty-buttons .button.normal { 
+            background: linear-gradient(45deg, #3498db, #2980b9); 
+        }
+
+        .puzzle-container {
+            margin: 20px auto;
+            display: inline-block;
+            border: 3px solid #333;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f0f0f0;
+        }
+
+        .puzzle-grid {
+            display: grid;
+            gap: 2px;
+            background: #333;
+            padding: 2px;
+        }
+
+        .puzzle-piece {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            position: relative;
+            touch-action: manipulation;
+        }
+
+        .puzzle-piece:hover {
+            border-color: #ff6b6b;
+        }
+
+        .puzzle-piece.empty {
+            background: #ddd;
+            cursor: default;
+        }
+
+        .puzzle-piece.empty:hover {
+            border-color: transparent;
+        }
+
+        .moves-counter {
+            margin: 10px 0;
+            font-size: 18px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .picture-select {
+            margin: 20px 0;
+        }
+
+        .picture-option {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            margin: 5px;
+            border: 3px solid transparent;
+            border-radius: 10px;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            touch-action: manipulation;
+        }
+
+        .picture-option:hover, .picture-option.selected {
+            border-color: #ff6b6b;
+            transform: scale(1.05);
+        }
+
+        .congratulations {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .back-button {
+            background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+            margin-top: 15px;
+        }
+
+        .game-title {
+            font-size: 28px;
+            background: linear-gradient(45deg, #ff6b6b, #3498db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .loading-message {
+            color: #666;
+            font-style: italic;
+            margin: 10px 0;
+        }
+
+        @media (max-width: 480px) {
+            .game-container {
+                padding: 15px;
+            }
+            
+            h1, .game-title {
+                font-size: 22px;
+            }
+            
+            .button {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- タイトル画面 -->
+        <div id="title-screen" class="screen active">
+            <h1 class="game-title">🧩 できるんです！パズル 🧩</h1>
+            <p class="subtitle">楽しいスライドパズルゲーム</p>
+            <div class="loading-message" id="loading-message">画像を読み込み中...</div>
+            <button class="button" id="start-button" onclick="goToPictureSelect()" style="display: none;">ゲームスタート</button>
+        </div>
+
+        <!-- 絵柄選択画面 -->
+        <div id="picture-select-screen" class="screen">
+            <h2>絵柄を選ぼう！</h2>
+            <div class="picture-select" id="picture-options">
+                <div class="picture-option selected" onclick="selectPicture(0)" data-picture="0"></div>
+            </div>
+            <button class="button" onclick="goToDifficultySelect()">この絵柄で遊ぶ</button>
+            <button class="button back-button" onclick="goToTitle()">戻る</button>
+        </div>
+
+        <!-- 難易度選択画面 -->
+        <div id="difficulty-select-screen" class="screen">
+            <h2>難易度を選ぼう！</h2>
+            <div class="difficulty-buttons">
+                <button class="button easy" onclick="startGame(3)">かんたん (3×3)</button>
+                <button class="button normal" onclick="startGame(4)">ふつう (4×4)</button>
+            </div>
+            <button class="button back-button" onclick="goToPictureSelect()">戻る</button>
+        </div>
+
+        <!-- ゲーム画面 -->
+        <div id="game-screen" class="screen">
+            <h2>パズルを解いてね！</h2>
+            <div class="moves-counter">動かした回数: <span id="moves">0</span></div>
+            <div class="puzzle-container">
+                <div id="puzzle-grid" class="puzzle-grid"></div>
+            </div>
+            <button class="button back-button" onclick="goToDifficultySelect()">難易度選択に戻る</button>
+        </div>
+
+        <!-- クリア画面 -->
+        <div id="clear-screen" class="screen">
+            <div class="congratulations">
+                <h2>🎉 おめでとう！ 🎉</h2>
+                <p>パズルクリア！</p>
+                <p><span id="final-moves"></span>回で完成させました</p>
+            </div>
+            <button class="button" onclick="goToPictureSelect()">次のパズルに挑戦</button>
+            <button class="button back-button" onclick="goToTitle()">タイトルに戻る</button>
+        </div>
+    </div>
+
+    <script>
+        // ゲーム状態
+        let currentPicture = 0;
+        let currentSize = 3;
+        let moves = 0;
+        let puzzleGrid = [];
+        let gameImages = [];
+        let imagesLoaded = false;
+
+        // 画面切り替え関数
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function goToTitle() {
+            showScreen('title-screen');
+        }
+
+        function goToPictureSelect() {
+            if (!imagesLoaded) {
+                alert('画像の読み込みが完了していません。しばらくお待ちください。');
+                return;
+            }
+            updatePictureOptions();
+            showScreen('picture-select-screen');
+        }
+
+        function goToDifficultySelect() {
+            showScreen('difficulty-select-screen');
+        }
+
+        // 絵柄選択
+        function selectPicture(index) {
+            currentPicture = index;
+            document.querySelectorAll('.picture-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            document.querySelector(`[data-picture="${index}"]`).classList.add('selected');
+        }
+
+        function updatePictureOptions() {
+            const container = document.getElementById('picture-options');
+            container.innerHTML = '';
+            
+            gameImages.forEach((imageData, index) => {
+                const option = document.createElement('div');
+                option.className = 'picture-option' + (index === 0 ? ' selected' : '');
+                option.style.backgroundImage = `url(${imageData})`;
+                option.setAttribute('data-picture', index.toString());
+                option.onclick = () => selectPicture(index);
+                container.appendChild(option);
+            });
+        }
+
+        // ローカル画像を読み込む
+        function loadLocalImages() {
+            const imagePaths = [
+                '画像/Canva修正/001.png'
+                // 他の画像がある場合はここに追加
+                // '画像/Canva修正/002.png',
+                // '画像/Canva修正/003.png'
+            ];
+
+            let loadedCount = 0;
+            const totalImages = imagePaths.length;
+
+            imagePaths.forEach((path, index) => {
+                const img = new Image();
+                
+                img.onload = function() {
+                    // 画像を正方形にリサイズ
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 400;
+                    canvas.height = 400;
+                    
+                    const minSize = Math.min(img.width, img.height);
+                    const startX = (img.width - minSize) / 2;
+                    const startY = (img.height - minSize) / 2;
+                    
+                    ctx.drawImage(img, startX, startY, minSize, minSize, 0, 0, 400, 400);
+                    
+                    gameImages[index] = canvas.toDataURL();
+                    loadedCount++;
+                    
+                    console.log(`画像 ${index + 1}/${totalImages} 読み込み完了: ${path}`);
+                    
+                    if (loadedCount === totalImages) {
+                        onAllImagesLoaded();
+                    }
+                };
+                
+                img.onerror = function() {
+                    console.log(`画像読み込み失敗: ${path}`);
+                    // エラーの場合はサンプル画像を作成
+                    gameImages[index] = createSampleImage(index);
+                    loadedCount++;
+                    
+                    if (loadedCount === totalImages) {
+                        onAllImagesLoaded();
+                    }
+                };
+                
+                img.src = path;
+            });
+        }
+
+        function onAllImagesLoaded() {
+            imagesLoaded = true;
+            document.getElementById('loading-message').style.display = 'none';
+            document.getElementById('start-button').style.display = 'inline-block';
+            console.log('すべての画像の読み込みが完了しました！');
+        }
+
+        // サンプル画像を作成（フォールバック用）
+        function createSampleImage(index) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 300;
+            canvas.height = 300;
+            
+            // 各画像ごとに異なる色のグラデーション
+            const colors = [
+                ['#ff6b6b', '#3498db', '#2ecc71'],
+                ['#9b59b6', '#e74c3c', '#f39c12'],
+                ['#1abc9c', '#34495e', '#e67e22']
+            ];
+            
+            const colorSet = colors[index % colors.length];
+            const gradient = ctx.createLinearGradient(0, 0, 300, 300);
+            gradient.addColorStop(0, colorSet[0]);
+            gradient.addColorStop(0.5, colorSet[1]);
+            gradient.addColorStop(1, colorSet[2]);
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 300, 300);
+            
+            // 図形を追加
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.beginPath();
+            ctx.arc(80, 80, 30, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.beginPath();
+            ctx.arc(220, 80, 40, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.beginPath();
+            ctx.arc(150, 220, 50, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // テキスト
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 36px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(`画像${index + 1}`, 150, 150);
+            
+            return canvas.toDataURL();
+        }
+
+        // ゲーム開始
+        function startGame(size) {
+            currentSize = size;
+            moves = 0;
+            document.getElementById('moves').textContent = moves;
+            initializePuzzle();
+            showScreen('game-screen');
+        }
+
+        // パズル初期化
+        function initializePuzzle() {
+            const container = document.getElementById('puzzle-grid');
+            const maxSize = Math.min(window.innerWidth * 0.8, 300);
+            const pieceSize = Math.floor(maxSize / currentSize);
+            
+            container.style.gridTemplateColumns = `repeat(${currentSize}, ${pieceSize}px)`;
+            container.innerHTML = '';
+            
+            // パズルピースの配列を作成
+            puzzleGrid = [];
+            for (let i = 0; i < currentSize * currentSize - 1; i++) {
+                puzzleGrid.push(i);
+            }
+            puzzleGrid.push(null); // 空のピース
+            
+            // シャッフル
+            shufflePuzzle();
+            
+            // DOM要素を作成
+            renderPuzzle(pieceSize);
+        }
+
+        function shufflePuzzle() {
+            // 解ける状態を保証するシャッフル
+            for (let i = 0; i < 1000; i++) {
+                const emptyIndex = puzzleGrid.indexOf(null);
+                const possibleMoves = getPossibleMoves(emptyIndex);
+                if (possibleMoves.length > 0) {
+                    const randomMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+                    [puzzleGrid[emptyIndex], puzzleGrid[randomMove]] = [puzzleGrid[randomMove], puzzleGrid[emptyIndex]];
+                }
+            }
+        }
+
+        function getPossibleMoves(emptyIndex) {
+            const moves = [];
+            const row = Math.floor(emptyIndex / currentSize);
+            const col = emptyIndex % currentSize;
+            
+            if (row > 0) moves.push(emptyIndex - currentSize); // 上
+            if (row < currentSize - 1) moves.push(emptyIndex + currentSize); // 下
+            if (col > 0) moves.push(emptyIndex - 1); // 左
+            if (col < currentSize - 1) moves.push(emptyIndex + 1); // 右
+            
+            return moves;
+        }
+
+        function renderPuzzle(pieceSize) {
+            const container = document.getElementById('puzzle-grid');
+            container.innerHTML = '';
+            
+            puzzleGrid.forEach((piece, index) => {
+                const pieceElement = document.createElement('div');
+                pieceElement.className = 'puzzle-piece';
+                pieceElement.style.width = `${pieceSize}px`;
+                pieceElement.style.height = `${pieceSize}px`;
+                
+                if (piece === null) {
+                    pieceElement.classList.add('empty');
+                } else {
+                    const row = Math.floor(piece / currentSize);
+                    const col = piece % currentSize;
+                    const bgX = -(col * pieceSize);
+                    const bgY = -(row * pieceSize);
+                    const totalSize = pieceSize * currentSize;
+                    
+                    pieceElement.style.backgroundImage = `url(${gameImages[currentPicture]})`;
+                    pieceElement.style.backgroundSize = `${totalSize}px ${totalSize}px`;
+                    pieceElement.style.backgroundPosition = `${bgX}px ${bgY}px`;
+                    
+                    pieceElement.onclick = () => movePiece(index);
+                    
+                    // タッチ操作対応
+                    pieceElement.addEventListener('touchstart', (e) => {
+                        e.preventDefault();
+                        movePiece(index);
+                    });
+                }
+                
+                container.appendChild(pieceElement);
+            });
+        }
+
+        function movePiece(clickedIndex) {
+            const emptyIndex = puzzleGrid.indexOf(null);
+            const possibleMoves = getPossibleMoves(emptyIndex);
+            
+            if (possibleMoves.includes(clickedIndex)) {
+                // ピースを移動
+                [puzzleGrid[emptyIndex], puzzleGrid[clickedIndex]] = [puzzleGrid[clickedIndex], puzzleGrid[emptyIndex]];
+                moves++;
+                document.getElementById('moves').textContent = moves;
+                
+                const maxSize = Math.min(window.innerWidth * 0.8, 300);
+                const pieceSize = Math.floor(maxSize / currentSize);
+                renderPuzzle(pieceSize);
+                
+                // クリアチェック
+                if (checkWin()) {
+                    setTimeout(showClear, 500);
+                }
+            }
+        }
+
+        function checkWin() {
+            for (let i = 0; i < puzzleGrid.length - 1; i++) {
+                if (puzzleGrid[i] !== i) return false;
+            }
+            return puzzleGrid[puzzleGrid.length - 1] === null;
+        }
+
+        function showClear() {
+            document.getElementById('final-moves').textContent = moves;
+            showScreen('clear-screen');
+        }
+
+        // 初期化
+        window.onload = function() {
+            console.log('ゲーム開始 - ローカル画像を読み込み中...');
+            loadLocalImages();
+        }
+    </script>
+</body>
+</html>
