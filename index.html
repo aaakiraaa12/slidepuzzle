@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ともだちキラキラおもいでパズル</title>
+    <title>できるんです！パズル</title>
     <style>
         * {
             margin: 0;
@@ -191,6 +191,55 @@
             padding: 20px;
             border-radius: 15px;
             margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .picture-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .new-unlock-message {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* 紙吹雪アニメーション */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff6b6b;
+            animation: confetti-fall 3s linear infinite;
+        }
+        
+        .confetti:nth-child(2n) { background: #3498db; animation-delay: 0.5s; }
+        .confetti:nth-child(3n) { background: #2ecc71; animation-delay: 1s; }
+        .confetti:nth-child(4n) { background: #f39c12; animation-delay: 1.5s; }
+        .confetti:nth-child(5n) { background: #9b59b6; animation-delay: 2s; }
+        
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
         }
 
         .back-button {
@@ -316,10 +365,15 @@
 
         <!-- クリア画面 -->
         <div id="clear-screen" class="screen">
-            <div class="congratulations">
+            <div class="congratulations" id="congratulations-container">
                 <h2>🎉 おめでとう！ 🎉</h2>
                 <p>パズルクリア！</p>
+                <div class="picture-title" id="picture-title"></div>
                 <p><span id="final-moves"></span>回で完成させました</p>
+            </div>
+            <div id="unlock-message" class="new-unlock-message" style="display: none;">
+                <h3>🆕 新しい絵柄をゲット！ 🆕</h3>
+                <p id="unlock-title"></p>
             </div>
             <button class="button" onclick="goToPictureSelect()">次のパズルに挑戦</button>
             <button class="button back-button" onclick="goToTitle()">タイトルに戻る</button>
@@ -334,6 +388,18 @@
         let puzzleGrid = [];
         let gameImages = [];
         let imagesLoaded = false;
+        let unlockedPictures = [0]; // 最初は001だけアンロック
+        let clearedStages = []; // クリアしたステージ情報
+        
+        // 画像タイトル
+        const imageTitles = [
+            'あばれ祭り',
+            '桜舞う春',
+            '夏の花火',
+            '紅葉の山',
+            '雪化粧'
+            // 画像を追加した時はここにもタイトルを追加
+        ];
 
         // 画面切り替え関数
         function showScreen(screenId) {
@@ -373,14 +439,28 @@
             const container = document.getElementById('picture-options');
             container.innerHTML = '';
             
-            gameImages.forEach((imageData, index) => {
-                const option = document.createElement('div');
-                option.className = 'picture-option' + (index === 0 ? ' selected' : '');
-                option.style.backgroundImage = `url(${imageData})`;
-                option.setAttribute('data-picture', index.toString());
-                option.onclick = () => selectPicture(index);
-                container.appendChild(option);
+            // アンロックされた画像のみ表示
+            unlockedPictures.forEach((pictureIndex, displayIndex) => {
+                if (gameImages[pictureIndex]) {
+                    const option = document.createElement('div');
+                    option.className = 'picture-option' + (displayIndex === 0 ? ' selected' : '');
+                    option.style.backgroundImage = `url(${gameImages[pictureIndex]})`;
+                    option.setAttribute('data-picture', pictureIndex.toString());
+                    option.onclick = () => selectPicture(pictureIndex);
+                    
+                    // タイトル表示（ホバー時）
+                    option.title = imageTitles[pictureIndex] || `画像 ${pictureIndex + 1}`;
+                    
+                    container.appendChild(option);
+                }
             });
+            
+            // 現在選択中の絵柄を更新
+            if (unlockedPictures.includes(currentPicture)) {
+                selectPicture(currentPicture);
+            } else {
+                selectPicture(unlockedPictures[0]);
+            }
         }
 
         // ローカル画像を読み込む
@@ -441,6 +521,7 @@
             document.getElementById('loading-message').style.display = 'none';
             document.getElementById('start-button').style.display = 'inline-block';
             console.log('すべての画像の読み込みが完了しました！');
+            console.log('アンロック済み絵柄:', unlockedPictures);
         }
 
         // サンプル画像を作成（フォールバック用）
@@ -658,12 +739,116 @@
 
         function showClear() {
             document.getElementById('final-moves').textContent = moves;
+            
+            // クリアした絵柄のタイトルを表示
+            const pictureTitle = imageTitles[currentPicture] || `画像 ${currentPicture + 1}`;
+            document.getElementById('picture-title').textContent = `タイトル：${pictureTitle}`;
+            
+            // ステージクリア情報を保存
+            const stageKey = `${currentPicture}-${currentSize}`;
+            if (!clearedStages.includes(stageKey)) {
+                clearedStages.push(stageKey);
+                saveGameData();
+            }
+            
+            // 新しい絵柄のアンロック判定
+            checkAndUnlockNewPicture();
+            
+            // 紙吹雪アニメーション
+            createConfetti();
+            
             showScreen('clear-screen');
+        }
+        
+        // 新しい絵柄のアンロック判定
+        function checkAndUnlockNewPicture() {
+            const totalImages = imageTitles.length;
+            
+            // まだアンロックされていない絵柄があるかチェック
+            if (unlockedPictures.length < totalImages && Math.random() < 0.7) { // 70%の確率
+                const availableImages = [];
+                for (let i = 0; i < totalImages; i++) {
+                    if (!unlockedPictures.includes(i) && gameImages[i]) {
+                        availableImages.push(i);
+                    }
+                }
+                
+                if (availableImages.length > 0) {
+                    // ランダムに新しい絵柄をアンロック
+                    const newPictureIndex = availableImages[Math.floor(Math.random() * availableImages.length)];
+                    unlockedPictures.push(newPictureIndex);
+                    saveGameData();
+                    
+                    // アンロックメッセージを表示
+                    const unlockTitle = imageTitles[newPictureIndex] || `画像 ${newPictureIndex + 1}`;
+                    document.getElementById('unlock-title').textContent = `「${unlockTitle}」がアンロックされました！`;
+                    document.getElementById('unlock-message').style.display = 'block';
+                } else {
+                    document.getElementById('unlock-message').style.display = 'none';
+                }
+            } else {
+                document.getElementById('unlock-message').style.display = 'none';
+            }
+        }
+        
+        // 紙吹雪アニメーション
+        function createConfetti() {
+            const container = document.getElementById('congratulations-container');
+            
+            // 既存の紙吹雪を削除
+            const existingConfetti = container.querySelectorAll('.confetti');
+            existingConfetti.forEach(confetti => confetti.remove());
+            
+            // 新しい紙吹雪を作成
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    container.appendChild(confetti);
+                    
+                    // 3秒後に削除
+                    setTimeout(() => {
+                        if (confetti.parentNode) {
+                            confetti.parentNode.removeChild(confetti);
+                        }
+                    }, 4000);
+                }, i * 50);
+            }
+        }
+        
+        // ゲームデータの保存
+        function saveGameData() {
+            const gameData = {
+                unlockedPictures: unlockedPictures,
+                clearedStages: clearedStages
+            };
+            localStorage.setItem('slidepuzzle_gamedata', JSON.stringify(gameData));
+        }
+        
+        // ゲームデータの読み込み
+        function loadGameData() {
+            try {
+                const savedData = localStorage.getItem('slidepuzzle_gamedata');
+                if (savedData) {
+                    const gameData = JSON.parse(savedData);
+                    unlockedPictures = gameData.unlockedPictures || [0];
+                    clearedStages = gameData.clearedStages || [];
+                    console.log('セーブデータを読み込みました:', gameData);
+                }
+            } catch (error) {
+                console.log('セーブデータの読み込みに失敗しました');
+                unlockedPictures = [0];
+                clearedStages = [];
+            }
         }
 
         // 初期化
         window.onload = function() {
             console.log('ゲーム開始 - ローカル画像を読み込み中...');
+            loadGameData(); // セーブデータを読み込み
             loadLocalImages();
         }
     </script>
