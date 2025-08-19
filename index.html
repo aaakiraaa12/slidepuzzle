@@ -845,9 +845,12 @@
             }
         }
 
-                // デバッグモード（開発者用）
+        // ゲーム画面で「Ctrl + Shift + C」を押したときにクリア画面に直接ジャンプ
         document.addEventListener('keydown', function(e) {
-            // ...デバッグコード...
+            if (e.ctrlKey && e.shiftKey && e.key === 'C' && document.getElementById('game-screen').classList.contains('active')) {
+                moves = Math.floor(Math.random() * 50) + 10; // ランダムな手数
+                showClear();
+            }
         });
 
         // 初期化
