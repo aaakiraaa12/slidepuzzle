@@ -90,6 +90,27 @@
             background: linear-gradient(45deg, #3498db, #2980b9); 
         }
 
+        .difficulty-buttons .button.hard { 
+            background: linear-gradient(45deg, #f39c12, #e67e22); 
+        }
+
+        .difficulty-buttons .button.oni { 
+            background: linear-gradient(45deg, #e74c3c, #c0392b); 
+        }
+
+        .difficulty-buttons .button.choyaba { 
+            background: linear-gradient(45deg, #8e44ad, #7d3c98);
+            animation: rainbow 2s linear infinite;
+        }
+
+        @keyframes rainbow {
+            0% { background: linear-gradient(45deg, #e74c3c, #f39c12); }
+            25% { background: linear-gradient(45deg, #f39c12, #2ecc71); }
+            50% { background: linear-gradient(45deg, #2ecc71, #3498db); }
+            75% { background: linear-gradient(45deg, #3498db, #9b59b6); }
+            100% { background: linear-gradient(45deg, #9b59b6, #e74c3c); }
+        }
+
         .puzzle-container {
             margin: 20px auto;
             display: inline-block;
@@ -97,13 +118,17 @@
             border-radius: 10px;
             overflow: hidden;
             background: #f0f0f0;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
         .puzzle-grid {
             display: grid;
-            gap: 2px;
+            gap: 1px;
             background: #333;
-            padding: 2px;
+            padding: 1px;
+            max-width: 100%;
+            overflow: hidden;
         }
 
         .puzzle-piece {
@@ -196,16 +221,52 @@
 
         @media (max-width: 480px) {
             .game-container {
-                padding: 15px;
+                padding: 10px;
+                max-width: 95vw;
             }
             
             h1, .game-title {
-                font-size: 22px;
+                font-size: 20px;
+            }
+            
+            h2 {
+                font-size: 18px;
             }
             
             .button {
-                padding: 12px 20px;
+                padding: 10px 15px;
                 font-size: 14px;
+                margin: 5px;
+            }
+            
+            .moves-counter {
+                font-size: 16px;
+            }
+            
+            .puzzle-container {
+                margin: 10px auto;
+                border: 2px solid #333;
+            }
+            
+            .puzzle-grid {
+                gap: 1px;
+                padding: 1px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .game-container {
+                padding: 8px;
+                max-width: 98vw;
+            }
+            
+            .button {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            
+            h1, .game-title {
+                font-size: 18px;
             }
         }
     </style>
@@ -236,6 +297,9 @@
             <div class="difficulty-buttons">
                 <button class="button easy" onclick="startGame(3)">かんたん (3×3)</button>
                 <button class="button normal" onclick="startGame(4)">ふつう (4×4)</button>
+                <button class="button hard" onclick="startGame(5)">むずい (5×5)</button>
+                <button class="button oni" onclick="startGame(9)">おに (9×9)</button>
+                <button class="button choyaba" onclick="startGame(11)">ちょーヤバ (11×11)</button>
             </div>
             <button class="button back-button" onclick="goToPictureSelect()">戻る</button>
         </div>
@@ -322,10 +386,10 @@
         // ローカル画像を読み込む
         function loadLocalImages() {
             const imagePaths = [
-                'images/001.png'
+                '画像/Canva修正/001.png'
                 // 他の画像がある場合はここに追加
-                // 'images/002.png',
-                // 'images/003.png'
+                // '画像/Canva修正/002.png',
+                // '画像/Canva修正/003.png'
             ];
 
             let loadedCount = 0;
@@ -440,7 +504,24 @@
         // パズル初期化
         function initializePuzzle() {
             const container = document.getElementById('puzzle-grid');
-            const maxSize = Math.min(window.innerWidth * 0.8, 300);
+            
+            // 画面サイズとパディングを考慮してパズルサイズを調整
+            const containerPadding = 60; // コンテナの余白
+            const screenWidth = window.innerWidth - containerPadding;
+            const screenHeight = window.innerHeight - 300; // UI要素分を除く
+            
+            let maxSize;
+            if (currentSize <= 4) {
+                maxSize = Math.min(screenWidth * 0.85, screenHeight * 0.7, 320);
+            } else if (currentSize <= 6) {
+                maxSize = Math.min(screenWidth * 0.90, screenHeight * 0.75, 360);
+            } else if (currentSize <= 9) {
+                maxSize = Math.min(screenWidth * 0.95, screenHeight * 0.8, 380);
+            } else {
+                // ちょーヤバは特に小さく
+                maxSize = Math.min(screenWidth * 0.98, screenHeight * 0.85, 400);
+            }
+            
             const pieceSize = Math.floor(maxSize / currentSize);
             
             container.style.gridTemplateColumns = `repeat(${currentSize}, ${pieceSize}px)`;
@@ -453,7 +534,7 @@
             }
             puzzleGrid.push(null); // 空のピース
             
-            // シャッフル
+            // シャッフル（大きなパズルほど多くシャッフル）
             shufflePuzzle();
             
             // DOM要素を作成
@@ -461,8 +542,19 @@
         }
 
         function shufflePuzzle() {
-            // 解ける状態を保証するシャッフル
-            for (let i = 0; i < 1000; i++) {
+            // 解ける状態を保証するシャッフル（難易度に応じて調整）
+            let shuffleCount;
+            if (currentSize <= 4) {
+                shuffleCount = 1000;
+            } else if (currentSize <= 6) {
+                shuffleCount = 2000;
+            } else if (currentSize <= 9) {
+                shuffleCount = 3000;
+            } else {
+                shuffleCount = 5000; // ちょーヤバは特別に多く
+            }
+            
+            for (let i = 0; i < shuffleCount; i++) {
                 const emptyIndex = puzzleGrid.indexOf(null);
                 const possibleMoves = getPossibleMoves(emptyIndex);
                 if (possibleMoves.length > 0) {
@@ -531,7 +623,22 @@
                 moves++;
                 document.getElementById('moves').textContent = moves;
                 
-                const maxSize = Math.min(window.innerWidth * 0.8, 300);
+                // パズルサイズに応じて再計算（初期化と同じロジック）
+                const containerPadding = 60;
+                const screenWidth = window.innerWidth - containerPadding;
+                const screenHeight = window.innerHeight - 300;
+                
+                let maxSize;
+                if (currentSize <= 4) {
+                    maxSize = Math.min(screenWidth * 0.85, screenHeight * 0.7, 320);
+                } else if (currentSize <= 6) {
+                    maxSize = Math.min(screenWidth * 0.90, screenHeight * 0.75, 360);
+                } else if (currentSize <= 9) {
+                    maxSize = Math.min(screenWidth * 0.95, screenHeight * 0.8, 380);
+                } else {
+                    maxSize = Math.min(screenWidth * 0.98, screenHeight * 0.85, 400);
+                }
+                
                 const pieceSize = Math.floor(maxSize / currentSize);
                 renderPuzzle(pieceSize);
                 
