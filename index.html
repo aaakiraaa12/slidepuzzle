@@ -845,6 +845,11 @@
             }
         }
 
+                // デバッグモード（開発者用）
+        document.addEventListener('keydown', function(e) {
+            // ...デバッグコード...
+        });
+
         // 初期化
         window.onload = function() {
             console.log('ゲーム開始 - ローカル画像を読み込み中...');
