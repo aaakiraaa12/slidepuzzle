@@ -217,30 +217,19 @@
             50% { transform: scale(1.05); }
         }
 
-        /* 紙吹雪アニメーション */
+        /* 新しい紙吹雪用スタイル（中心から弾ける） */
         .confetti {
             position: absolute;
             width: 10px;
             height: 10px;
             background: #ff6b6b;
-            animation: confetti-fall 3s linear infinite;
+            border-radius: 50%;
         }
         
-        .confetti:nth-child(2n) { background: #3498db; animation-delay: 0.5s; }
-        .confetti:nth-child(3n) { background: #2ecc71; animation-delay: 1s; }
-        .confetti:nth-child(4n) { background: #f39c12; animation-delay: 1.5s; }
-        .confetti:nth-child(5n) { background: #9b59b6; animation-delay: 2s; }
-        
-        @keyframes confetti-fall {
-            0% {
-                transform: translateY(-100vh) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) rotate(720deg);
-                opacity: 0;
-            }
-        }
+        .confetti:nth-child(2n) { background: #3498db; }
+        .confetti:nth-child(3n) { background: #2ecc71; }
+        .confetti:nth-child(4n) { background: #f39c12; }
+        .confetti:nth-child(5n) { background: #9b59b6; }
 
         .back-button {
             background: linear-gradient(45deg, #95a5a6, #7f8c8d);
