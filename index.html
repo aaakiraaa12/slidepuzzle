@@ -217,20 +217,66 @@
             50% { transform: scale(1.05); }
         }
 
-        /* 新しい紙吹雪用スタイル（中心から弾ける） */
+        /* 新しい紙吹雪アニメーション（中心から弾ける） */
         .confetti {
             position: absolute;
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             background: #ff6b6b;
             border-radius: 50%;
+            pointer-events: none;
         }
         
-        .confetti:nth-child(2n) { background: #3498db; }
-        .confetti:nth-child(3n) { background: #2ecc71; }
-        .confetti:nth-child(4n) { background: #f39c12; }
-        .confetti:nth-child(5n) { background: #9b59b6; }
-
+        .confetti:nth-child(2n) { 
+            background: #3498db; 
+            animation: explode1 2s ease-out forwards;
+        }
+        .confetti:nth-child(3n) { 
+            background: #2ecc71; 
+            animation: explode2 2.2s ease-out forwards;
+        }
+        .confetti:nth-child(4n) { 
+            background: #f39c12; 
+            animation: explode3 1.8s ease-out forwards;
+        }
+        .confetti:nth-child(5n) { 
+            background: #9b59b6; 
+            animation: explode4 2.1s ease-out forwards;
+        }
+        .confetti:nth-child(6n) { 
+            background: #e74c3c; 
+            animation: explode5 1.9s ease-out forwards;
+        }
+        
+        @keyframes explode1 {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            15% { transform: translate(-30px, -80px) scale(1) rotate(180deg); opacity: 1; }
+            100% { transform: translate(-60px, 100px) scale(0.3) rotate(720deg); opacity: 0; }
+        }
+        
+        @keyframes explode2 {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            15% { transform: translate(40px, -60px) scale(1) rotate(-180deg); opacity: 1; }
+            100% { transform: translate(120px, 80px) scale(0.3) rotate(-720deg); opacity: 0; }
+        }
+        
+        @keyframes explode3 {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            15% { transform: translate(-70px, 30px) scale(1) rotate(270deg); opacity: 1; }
+            100% { transform: translate(-140px, 90px) scale(0.3) rotate(900deg); opacity: 0; }
+        }
+        
+        @keyframes explode4 {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            15% { transform: translate(50px, 40px) scale(1) rotate(-270deg); opacity: 1; }
+            100% { transform: translate(100px, 120px) scale(0.3) rotate(-900deg); opacity: 0; }
+        }
+        
+        @keyframes explode5 {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            15% { transform: translate(0px, -90px) scale(1) rotate(360deg); opacity: 1; }
+            100% { transform: translate(0px, -180px) scale(0.3) rotate(1080deg); opacity: 0; }
+        }
         .back-button {
             background: linear-gradient(45deg, #95a5a6, #7f8c8d);
             margin-top: 15px;
