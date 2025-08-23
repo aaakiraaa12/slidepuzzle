@@ -957,6 +957,12 @@
             // 完成イラストを表示
              document.getElementById('completed-image').style.backgroundImage = `url(${gameImages[currentPicture]})`;
             console.log('完成画像設定:', currentPicture, gameImages[currentPicture] ? '画像あり' : '画像なし');
+            console.log('completed-image要素:', document.getElementById('completed-image'));
+    console.log('currentPicture値:', currentPicture);
+    console.log('gameImages配列:', gameImages.length, '個の画像');
+    if (gameImages[currentPicture]) {
+        console.log('画像データの最初の部分:', gameImages[currentPicture].substring(0, 50));
+    }
             
             // 感謝メッセージを表示
             const currentImageDetail = imageDetails[currentPicture];
