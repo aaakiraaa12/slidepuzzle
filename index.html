@@ -353,6 +353,26 @@
                 font-size: 18px;
             }
         }
+        /* 完成イラスト表示用スタイル */
+        .completed-image {
+            width: 150px;
+            height: 150px;
+            border: 3px solid #fff;
+            border-radius: 10px;
+            margin: 15px auto;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .thank-you-message {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body>
@@ -404,11 +424,14 @@
                 <h2>🎉 おめでとう！ 🎉</h2>
                 <p>パズルクリア！</p>
                 <div class="picture-title" id="picture-title"></div>
+                
+                <!-- 完成イラスト表示 -->
+                <div class="completed-image" id="completed-image"></div>
+                
+                <!-- 感謝メッセージ -->
+                <div class="thank-you-message" id="thank-you-message"></div>
+                
                 <p><span id="final-moves"></span>回で完成させました</p>
-            </div>
-            <div id="unlock-message" class="new-unlock-message" style="display: none;">
-                <h3>🆕 新しい絵柄をゲット！ 🆕</h3>
-                <p id="unlock-title"></p>
             </div>
             <button class="button" onclick="goToPictureSelect()">次のパズルに挑戦</button>
             <button class="button back-button" onclick="goToTitle()">タイトルに戻る</button>
@@ -427,13 +450,20 @@
         let clearedStages = []; // クリアしたステージ情報
         
         // 画像タイトル
-        const imageTitles = [
-            'あばれ祭り',
-            '桜舞う春',
-            '夏の花火',
-            '紅葉の山',
-            '雪化粧'
-            // 画像を追加した時はここにもタイトルを追加
+        // 画像の詳細情報（提供者情報と感謝メッセージ）
+        const imageDetails = [
+            {
+                title: 'あばれ祭り',
+                type: 'original', // あきらちゃん作成
+                message: '遊んでくれてありがとう！\n楽しんでもらえて嬉しいです♪'
+            }
+            // お友達の画像を追加する時は、ここに以下のような形で追加
+            // {
+            //     title: '桜舞う春',
+            //     type: 'friend',
+            //     provider: '太郎くん',
+            //     message: 'イラスト提供：太郎くん\nありがとうございます！'
+            // }
         ];
 
         // 画面切り替え関数
@@ -774,6 +804,16 @@
 
         function showClear() {
             document.getElementById('final-moves').textContent = moves;
+            // 完成イラストを表示
+            document.getElementById('completed-image').style.backgroundImage = `url(${gameImages[currentPicture]})`;
+            
+            // 感謝メッセージを表示
+            const currentImageDetail = imageDetails[currentPicture];
+            if (currentImageDetail) {
+                document.getElementById('thank-you-message').textContent = currentImageDetail.message;
+            } else {
+                document.getElementById('thank-you-message').textContent = '遊んでくれてありがとう！';
+            }
             
             // クリアした絵柄のタイトルを表示
             const pictureTitle = imageTitles[currentPicture] || `画像 ${currentPicture + 1}`;
