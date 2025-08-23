@@ -163,7 +163,7 @@
         }
 
         .picture-select {
-             margin: 20px 0;
+              margin: 20px 0;
             max-height: 200px;
             overflow-x: auto;
             overflow-y: hidden;
@@ -173,6 +173,7 @@
             gap: 10px;
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
+            justify-content: center;
         }
 
         .picture-option {
@@ -350,13 +351,30 @@
             .picture-select {
                 max-height: 150px;
                 padding: 5px;
-                gap: 5px;
+                gap: 8px;
+                max-width: 100%;
+                justify-content: flex-start;
             }
             
             .picture-option {
-                width: 60px;
-                height: 60px;
-                min-width: 60px;
+                width: 85px;
+                height: 85px;
+                min-width: 85px;
+            }
+        }
+
+        /* スマホでの絵柄表示調整（3個程度表示） */
+        @media (max-width: 480px) {
+            .picture-select {
+                width: calc(85px * 3 + 8px * 2 + 10px);
+                margin: 20px auto;
+                justify-content: flex-start;
+            }
+            
+            /* 絵柄が少ない場合は中央寄せ */
+            .picture-select:has(.picture-option:nth-child(-n+3):last-child) {
+                justify-content: center;
+                width: auto;
             }
         }
 
@@ -373,6 +391,15 @@
             
             h1, .game-title {
                 font-size: 18px;
+
+            .picture-select {
+                width: calc(75px * 3 + 6px * 2 + 8px);
+            }
+            
+            .picture-option {
+                width: 75px;
+                height: 75px;
+                min-width: 75px;
             }
         }
         /* 完成イラスト表示用スタイル */
