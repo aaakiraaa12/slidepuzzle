@@ -956,13 +956,7 @@
             document.getElementById('final-moves').textContent = moves;
             // 完成イラストを表示
             ✅ 修正後:
-    const completedImageElement = document.getElementById('completed-image');
-    if (completedImageElement && gameImages[currentPicture]) {
-    completedImageElement.style.backgroundImage = `url(${gameImages[currentPicture]})`;
-    console.log('完成イラスト設定:', gameImages[currentPicture] ? 'OK' : 'NG');
-    } else {
-    console.log('完成イラスト設定エラー:', completedImageElement ? '要素OK' : '要素NG', gameImages[currentPicture] ? '画像OK' : '画像NG');
-}
+    document.getElementById('completed-image').style.backgroundImage = `url(${gameImages[currentPicture]})`;
             
             // 感謝メッセージを表示
             const currentImageDetail = imageDetails[currentPicture];
