@@ -955,8 +955,8 @@
         function showClear() {
             document.getElementById('final-moves').textContent = moves;
             // 完成イラストを表示
-            ✅ 修正後:
-    document.getElementById('completed-image').style.backgroundImage = `url(${gameImages[currentPicture]})`;
+             document.getElementById('completed-image').style.backgroundImage = `url(${gameImages[currentPicture]})`;
+            console.log('完成画像設定:', currentPicture, gameImages[currentPicture] ? '画像あり' : '画像なし');
             
             // 感謝メッセージを表示
             const currentImageDetail = imageDetails[currentPicture];
