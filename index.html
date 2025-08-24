@@ -202,6 +202,22 @@
             justify-content: center;
         }
 
+        /* 右端にスクロール可能を示すグラデーション */
+        .picture-select::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 30px;
+            height: 100%;
+            background: linear-gradient(to left, rgba(255,255,255,0.8), transparent);
+            pointer-events: none;
+        }
+        
+        .picture-select {
+            position: relative;
+        }
+
         .picture-option {
             display: inline-block;
             width: 80px;
@@ -473,26 +489,34 @@
         }
         
         /* スクロールバーのスタイリング */
-        .picture-select::-webkit-scrollbar {
-            height: 12px;
+        .picture-select {
+            scrollbar-width: auto; /* Firefox用 */
         }
         
-        .picture-select::-webkit-scrollbar:horizontal {
-            height: 12px;
+        .picture-select::-webkit-scrollbar {
+            height: 14px;
+            display: block;
         }
         
         .picture-select::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: #e0e0e0;
             border-radius: 10px;
+            border: 1px solid #ccc;
         }
         
         .picture-select::-webkit-scrollbar-thumb {
             background: linear-gradient(45deg, #ff6b6b, #3498db);
             border-radius: 10px;
+            border: 1px solid #999;
+            min-width: 20px;
         }
         
         .picture-select::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(45deg, #e55555, #2980b9);
+        }
+        
+        .picture-select::-webkit-scrollbar-corner {
+            background: transparent;
         }
             background: rgba(255, 255, 255, 0.2);
             padding: 10px;
