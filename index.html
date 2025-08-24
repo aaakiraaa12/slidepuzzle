@@ -1109,17 +1109,17 @@
             if (currentImageDetail) {
                 document.getElementById('thank-you-message').textContent = currentImageDetail.message;
                 
-                // 写真提供者を表示
-                let providerText = '';
+                // 写真提供者を表示（「誰々より」形式）
+                const titleElement = document.getElementById('picture-title');
                 if (currentImageDetail.type === 'friend') {
-                    providerText = `写真提供者：${currentImageDetail.provider}`;
+                    titleElement.innerHTML = `${currentImageDetail.provider}<span style="font-size: 14px;">より</span>`;
                 } else {
-                    providerText = `写真提供者：あきらちゃん`;
+                    titleElement.innerHTML = `あきらちゃん<span style="font-size: 14px;">より</span>`;
                 }
-                document.getElementById('picture-title').textContent = providerText;
             } else {
+                } else {
                 document.getElementById('thank-you-message').textContent = '遊んでくれてありがとう！';
-                document.getElementById('picture-title').textContent = '写真提供者：あきらちゃん';
+                document.getElementById('picture-title').innerHTML = `あきらちゃん<span style="font-size: 14px;">より</span>`;
             }
                         
             // ステージクリア情報を保存
