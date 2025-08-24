@@ -1129,9 +1129,12 @@
         window.onload = function() {
             console.log('ゲーム開始 - ローカル画像を読み込み中...');
             
-            // 初期状態でタイトル背景を設定
-            document.body.classList.add('title-background');
-            console.log('タイトル背景を設定しました');
+            // 初期状態でタイトル背景を強制的に設定
+            const body = document.body;
+            body.className = ''; // 既存のクラスをクリア
+            body.classList.add('title-background');
+            console.log('タイトル背景を設定:', body.className);
+            console.log('bodyクラス一覧:', body.classList);
             
             loadGameData(); // セーブデータを読み込み
             loadLocalImages();
