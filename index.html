@@ -194,9 +194,8 @@
             overflow-x: scroll;
             overflow-y: hidden;
             padding: 10px 5px;
-            display: grid;
-            grid-template-columns: repeat(3, 85px);
-            grid-template-rows: repeat(2, 85px);
+            display: flex;
+            flex-wrap: wrap;
             gap: 10px;
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
@@ -259,6 +258,7 @@
             transition: all 0.2s;
             touch-action: manipulation;
             flex-shrink: 0;
+            position: relative;
         }
 
         .picture-option:hover, .picture-option.selected {
@@ -461,15 +461,22 @@
             }
         }
 
-        /* スマホでの絵柄表示調整（6個表示：2行×3列） */
+        /* スマホでの絵柄表示調整（6個表示：2行×3列、スクロール対応） */
         @media (max-width: 480px) {
             .picture-select {
                 width: calc(85px * 3 + 10px * 2 + 20px);
                 max-height: 190px;
                 margin: 20px auto;
-                justify-content: center;
-                grid-template-columns: repeat(3, 85px);
-                grid-template-rows: repeat(2, 85px);
+                justify-content: flex-start;
+                flex-wrap: wrap;
+                overflow-x: scroll;
+                overflow-y: hidden;
+            }
+            
+            .picture-option {
+                flex: 0 0 85px;
+                width: 85px;
+                height: 85px;
             }
         }
 
@@ -789,11 +796,21 @@
             } else {
                 selectPicture(unlockedPictures[0]);
             }
-            // スマホ用：右矢印の表示制御
+            // スマホ用：右矢印の表示制御とコンテナ幅調整
             const pictureContainer = document.getElementById('picture-options');
             setTimeout(() => {
+                // 絵柄数に応じてコンテナ幅を動的調整
+                const totalPictures = unlockedPictures.filter(index => gameImages[index]).length;
+                const rows = Math.ceil(totalPictures / 3);
+                const containerWidth = Math.min(totalPictures, 3) * 85 + Math.min(totalPictures - 1, 2) * 10 + 20;
+                
+                if (window.innerWidth <= 480) {
+                    pictureContainer.style.width = `${containerWidth}px`;
+                    pictureContainer.style.maxHeight = `${rows * 95}px`;
+                }
+                
                 const hasMore = pictureContainer.scrollWidth > pictureContainer.clientWidth;
-                if (hasMore) {
+                if (hasMore && totalPictures > 6) {
                     pictureContainer.classList.add('has-more');
                 } else {
                     pictureContainer.classList.remove('has-more');
