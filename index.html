@@ -636,6 +636,16 @@
                 screen.classList.remove('active');
             });
             document.getElementById(screenId).classList.add('active');
+            
+            // 背景画像の切り替え
+            const body = document.body;
+            body.classList.remove('title-background', 'game-background');
+            
+            if (screenId === 'title-screen') {
+                body.classList.add('title-background');
+            } else {
+                body.classList.add('game-background');
+            }
         }
 
         function goToTitle() {
