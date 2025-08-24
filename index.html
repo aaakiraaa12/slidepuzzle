@@ -20,6 +20,10 @@
             align-items: center;
             touch-action: manipulation;
             padding: 10px;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
         }
 
         /* タイトル画面用の背景 */
@@ -185,9 +189,9 @@
         }
 
         .picture-select {
-              margin: 20px 0;
+            margin: 20px 0;
             max-height: 200px;
-            overflow-x: auto;
+            overflow-x: scroll;
             overflow-y: hidden;
             padding: 10px 5px;
             display: flex;
@@ -470,7 +474,11 @@
         
         /* スクロールバーのスタイリング */
         .picture-select::-webkit-scrollbar {
-            height: 8px;
+            height: 12px;
+        }
+        
+        .picture-select::-webkit-scrollbar:horizontal {
+            height: 12px;
         }
         
         .picture-select::-webkit-scrollbar-track {
