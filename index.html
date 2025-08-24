@@ -48,6 +48,12 @@
             text-align: center;
         }
 
+        /* タイトル画面では白いコンテナを非表示 */
+        body.title-background .game-container {
+            background: transparent;
+            box-shadow: none;
+        }
+
         .screen {
             display: none;
         }
@@ -335,7 +341,7 @@
 
         .title-content {
             position: absolute;
-            bottom: 30%;
+            bottom: 20%;
             left: 50%;
             transform: translateX(-50%);
         }
