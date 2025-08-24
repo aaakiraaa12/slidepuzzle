@@ -668,11 +668,12 @@
                 type: 'original',     // お友達提供
                 message: 'わいわい祭り、たのしかったね！'  // ← ここがコメントになります
             },
-            // 006.png の情報
+           // 006.png の情報
             {
                 type: 'friend',     // お友達提供
                 provider: 'まほちゃん', // ← ここに提供者名を入力
                 message: 'やきマシュマロ、おいしーよ！'  // ← ここがコメントになります
+            },
             // 007.png の情報
             {
                 type: 'friend',     // お友達提供
@@ -1103,26 +1104,24 @@
         console.log('画像データの最初の部分:', gameImages[currentPicture].substring(0, 50));
     }
             
-            // 感謝メッセージを表示
+            // 感謝メッセージと写真提供者を表示
             const currentImageDetail = imageDetails[currentPicture];
             if (currentImageDetail) {
                 document.getElementById('thank-you-message').textContent = currentImageDetail.message;
+                
+                // 写真提供者を表示
+                let providerText = '';
+                if (currentImageDetail.type === 'friend') {
+                    providerText = `写真提供者：${currentImageDetail.provider}`;
+                } else {
+                    providerText = `写真提供者：あきらちゃん`;
+                }
+                document.getElementById('picture-title').textContent = providerText;
             } else {
                 document.getElementById('thank-you-message').textContent = '遊んでくれてありがとう！';
+                document.getElementById('picture-title').textContent = '写真提供者：あきらちゃん';
             }
-            
-            // 写真提供者を表示
-            const currentImageDetail = imageDetails[currentPicture];
-            let providerText = '';
-            
-            if (currentImageDetail && currentImageDetail.type === 'friend') {
-                providerText = `写真提供者：${currentImageDetail.provider}`;
-            } else {
-                providerText = `写真提供者：あきらちゃん`;
-            }
-            
-            document.getElementById('picture-title').textContent = providerText;
-            
+                        
             // ステージクリア情報を保存
             const stageKey = `${currentPicture}-${currentSize}`;
             if (!clearedStages.includes(stageKey)) {
