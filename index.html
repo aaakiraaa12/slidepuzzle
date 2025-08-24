@@ -507,13 +507,7 @@
         }
         
         .thank-you-message {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px;
-            border-radius: 8px;
-            margin: 10px 0;
-            font-size: 14px;
-            line-height: 1.4;
-        }
+            
         
         /* スクロールバーのスタイリング */
         .picture-select {
@@ -784,19 +778,19 @@
                 selectPicture(unlockedPictures[0]);
             }
             // スマホ用：右矢印の表示制御
-            const container = document.getElementById('picture-options');
+            const pictureContainer = document.getElementById('picture-options');
             setTimeout(() => {
-                const hasMore = container.scrollWidth > container.clientWidth;
+                const hasMore = pictureContainer.scrollWidth > pictureContainer.clientWidth;
                 if (hasMore) {
-                    container.classList.add('has-more');
+                    pictureContainer.classList.add('has-more');
                 } else {
-                    container.classList.remove('has-more');
+                    pictureContainer.classList.remove('has-more');
                 }
                 
                 // スクロール時に矢印を非表示
-                container.addEventListener('scroll', () => {
-                    if (container.scrollLeft > 0) {
-                        container.classList.remove('has-more');
+                pictureContainer.addEventListener('scroll', () => {
+                    if (pictureContainer.scrollLeft > 0) {
+                        pictureContainer.classList.remove('has-more');
                     }
                 });
             }, 100);
