@@ -194,8 +194,9 @@
             overflow-x: scroll;
             overflow-y: hidden;
             padding: 10px 5px;
-            display: flex;
-            flex-wrap: nowrap;
+            display: grid;
+            grid-template-columns: repeat(3, 85px);
+            grid-template-rows: repeat(2, 85px);
             gap: 10px;
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
@@ -263,6 +264,17 @@
         .picture-option:hover, .picture-option.selected {
             border-color: #ff6b6b;
             transform: scale(1.05);
+        }
+
+        /* クリア済み絵柄の★マーク */
+        .picture-option.cleared::before {
+            content: '⭐';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 16px;
+            z-index: 10;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
 
         .congratulations {
@@ -449,18 +461,15 @@
             }
         }
 
-        /* スマホでの絵柄表示調整（3個程度表示） */
+        /* スマホでの絵柄表示調整（6個表示：2行×3列） */
         @media (max-width: 480px) {
             .picture-select {
-                width: calc(85px * 3 + 8px * 2 + 10px);
+                width: calc(85px * 3 + 10px * 2 + 20px);
+                max-height: 190px;
                 margin: 20px auto;
-                justify-content: flex-start;
-            }
-            
-            /* 絵柄が少ない場合は中央寄せ */
-            .picture-select:has(.picture-option:nth-child(-n+3):last-child) {
                 justify-content: center;
-                width: auto;
+                grid-template-columns: repeat(3, 85px);
+                grid-template-rows: repeat(2, 85px);
             }
         }
 
@@ -763,6 +772,12 @@
                     
                     // タイトル表示（ホバー時）
                     option.title = imageTitles[pictureIndex] || `画像 ${pictureIndex + 1}`;
+                    
+                    // クリア済みかチェックして★マーク追加
+                    const isCleared = clearedStages.some(stage => stage.startsWith(`${pictureIndex}-`));
+                    if (isCleared) {
+                        option.classList.add('cleared');
+                    }
                     
                     container.appendChild(option);
                 }
@@ -1194,13 +1209,12 @@
                 const savedData = localStorage.getItem('slidepuzzle_gamedata');
                 if (savedData) {
                     const gameData = JSON.parse(savedData);
-                    unlockedPictures = gameData.unlockedPictures || [0];
+                    // アンロック情報は使わず、クリア情報のみ読み込み
                     clearedStages = gameData.clearedStages || [];
-                    console.log('セーブデータを読み込みました:', gameData);
+                    console.log('セーブデータを読み込みました（クリア情報のみ）:', gameData);
                 }
             } catch (error) {
                 console.log('セーブデータの読み込みに失敗しました');
-                unlockedPictures = [0];
                 clearedStages = [];
             }
         }
