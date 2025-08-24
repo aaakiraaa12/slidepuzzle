@@ -194,12 +194,13 @@
             overflow-x: scroll;
             overflow-y: hidden;
             padding: 10px 5px;
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-rows: repeat(2, 85px);
+            grid-auto-flow: column;
             gap: 10px;
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
-            justify-content: center;
+            justify-content: start;
         }
 
         /* 右端にスクロール可能を示すグラデーション */
@@ -461,20 +462,21 @@
             }
         }
 
-        /* スマホでの絵柄表示調整（6個表示：2行×3列、スクロール対応） */
+        /* スマホでの絵柄表示調整（2行×3列、右スクロール） */
         @media (max-width: 480px) {
             .picture-select {
                 width: calc(85px * 3 + 10px * 2 + 20px);
                 max-height: 190px;
                 margin: 20px auto;
-                justify-content: flex-start;
-                flex-wrap: wrap;
+                grid-template-rows: repeat(2, 85px);
+                grid-template-columns: repeat(3, 85px);
+                grid-auto-flow: column;
                 overflow-x: scroll;
                 overflow-y: hidden;
+                justify-content: start;
             }
             
             .picture-option {
-                flex: 0 0 85px;
                 width: 85px;
                 height: 85px;
             }
@@ -779,14 +781,21 @@
             // スマホ用：右矢印の表示制御とコンテナ幅調整
             const pictureContainer = document.getElementById('picture-options');
             setTimeout(() => {
-                // 絵柄数に応じてコンテナ幅を動的調整
+                // 絵柄数に応じてコンテナ幅を動的調整（3列2行＋右スクロール）
                 const totalPictures = unlockedPictures.filter(index => gameImages[index]).length;
-                const rows = Math.ceil(totalPictures / 3);
-                const containerWidth = Math.min(totalPictures, 3) * 85 + Math.min(totalPictures - 1, 2) * 10 + 20;
                 
                 if (window.innerWidth <= 480) {
+                    // 3列固定、必要に応じて右にスクロール
+                    const containerWidth = 85 * 3 + 10 * 2 + 20;
                     pictureContainer.style.width = `${containerWidth}px`;
-                    pictureContainer.style.maxHeight = `${rows * 95}px`;
+                    pictureContainer.style.maxHeight = '190px';
+                    
+                    // 7枚以上の場合はスクロール可能
+                    if (totalPictures > 6) {
+                        pictureContainer.style.gridTemplateColumns = `repeat(${Math.ceil(totalPictures / 2)}, 85px)`;
+                    } else {
+                        pictureContainer.style.gridTemplateColumns = 'repeat(3, 85px)';
+                    }
                 }
                 
                 const hasMore = pictureContainer.scrollWidth > pictureContainer.clientWidth;
