@@ -1146,9 +1146,9 @@
             showScreen('clear-screen');
         }
         
-        // 新しい絵柄のアンロック判定
+        // 新しい絵柄のアンロック判定（現在は使用しない）
         function checkAndUnlockNewPicture() {
-            const totalImages = imageTitles.length;
+            const totalImages = imageDetails.length;
             
             // まだアンロックされていない絵柄があるかチェック
             if (unlockedPictures.length < totalImages && Math.random() < 0.7) { // 70%の確率
@@ -1166,7 +1166,7 @@
                     saveGameData();
                     
                     // アンロックメッセージを表示
-                    const unlockTitle = imageTitles[newPictureIndex] || `画像 ${newPictureIndex + 1}`;
+                    const unlockTitle = `画像 ${newPictureIndex + 1}`;
                     document.getElementById('unlock-title').textContent = `「${unlockTitle}」がアンロックされました！`;
                     document.getElementById('unlock-message').style.display = 'block';
                 } else {
