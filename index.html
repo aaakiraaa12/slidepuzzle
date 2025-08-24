@@ -639,27 +639,11 @@
         let unlockedPictures = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]; // 全ての絵柄を最初からアンロック
         let clearedStages = []; // クリアしたステージ情報
         
-        // ✏️ 画像タイトル（10個に拡張）
-        // ここを編集して画像のタイトルを変更できます
-        const imageTitles = [
-            'あばれ祭',      // 001.png ← ここに画像のタイトルを入力
-            'みみちゃん',        // 002.png ← ここに画像のタイトルを入力
-            '夏の花火',        // 003.png ← ここに画像のタイトルを入力
-            '紅葉の山',        // 004.png ← ここに画像のタイトルを入力
-            '雪化粧',          // 005.png ← ここに画像のタイトルを入力
-            '海辺の夕日',      // 006.png ← ここに画像のタイトルを入力
-            '星空キャンプ',    // 007.png ← ここに画像のタイトルを入力
-            '虹の橋',          // 008.png ← ここに画像のタイトルを入力
-            '秋の収穫祭',      // 009.png ← ここに画像のタイトルを入力
-            '冬のイルミネーション' // 010.png ← ここに画像のタイトルを入力
-        ];
-
-        // ✏️ 画像の詳細情報（提供者と感謝メッセージ）
-        // ここを編集して画像提供者情報と感謝メッセージを変更できます
+        // ✏️ 画像の詳細情報（提供者とコメント）
+        // ここを編集して写真提供者情報とコメントを変更できます
         const imageDetails = [
             // 001.png の情報
             {
-                title: 'あばれ祭',
                 type: 'original',  // あきらちゃん作成の場合は 'original'
                 message: '遊んでくれてありがとう！\n楽しんでもらえて嬉しいです♪'
             },
@@ -667,56 +651,62 @@
             {
                 title: 'みみちゃん',
                 type: 'original',     // お友達提供の場合は 'friend' に変更
-                message: '我が家の可愛くて凶暴な猫だよ！'
+                message: '我が家の可愛くて凶暴な猫だよ！'  // ← ここがコメントになります
             },
             // 003.png の情報
             {
-                title: '夏の花火',
-                type: 'original',   // あきらちゃん作成
-                message: '遊んでくれてありがとう！\n楽しんでもらえて嬉しいです♪'
+                title: '紅葉の山',
+                type: 'friend',     // お友達提供
+                provider: '花子ちゃん', // ← ここに提供者名を入力
+                message: '素敵な写真をありがとうございます！'  // ← ここがコメントになります
             },
             // 004.png の情報
             {
                 title: '紅葉の山',
                 type: 'friend',     // お友達提供
                 provider: '花子ちゃん', // ← ここに提供者名を入力
-                message: 'イラスト提供：花子ちゃん\nありがとうございます！'
+                message: '素敵な写真をありがとうございます！'  // ← ここがコメントになります
             },
             // 005.png の情報
             {
-                title: '雪化粧',
-                type: 'original',   // あきらちゃん作成
-                message: '遊んでくれてありがとう！\n楽しんでもらえて嬉しいです♪'
+                title: '紅葉の山',
+                type: 'friend',     // お友達提供
+                provider: '花子ちゃん', // ← ここに提供者名を入力
+                message: '素敵な写真をありがとうございます！'  // ← ここがコメントになります
             },
             // 006.png の情報
             {
-                title: '海辺の夕日',
-                type: 'original',   // あきらちゃん作成
-                message: '遊んでくれてありがとう！\n楽しんでもらえて嬉しいです♪'
-            },
+                title: '紅葉の山',
+                type: 'friend',     // お友達提供
+                provider: '花子ちゃん', // ← ここに提供者名を入力
+                message: '素敵な写真をありがとうございます！'  // ← ここがコメントになります
             // 007.png の情報
             {
-                title: '星空キャンプ',
-                type: 'original',   // あきらちゃん作成
-                message: '遊んでくれてありがとう！\n楽しんでもらえて嬉しいです♪'
+                title: '紅葉の山',
+                type: 'friend',     // お友達提供
+                provider: '花子ちゃん', // ← ここに提供者名を入力
+                message: '素敵な写真をありがとうございます！'  // ← ここがコメントになります
             },
             // 008.png の情報
             {
-                title: '虹の橋',
-                type: 'original',   // あきらちゃん作成
-                message: '遊んでくれてありがとう！\n楽しんでもらえて嬉しいです♪'
+               title: '紅葉の山',
+                type: 'friend',     // お友達提供
+                provider: '花子ちゃん', // ← ここに提供者名を入力
+                message: '素敵な写真をありがとうございます！'  // ← ここがコメントになります
             },
             // 009.png の情報
             {
-                title: '秋の収穫祭',
-                type: 'original',   // あきらちゃん作成
-                message: '遊んでくれてありがとう！\n楽しんでもらえて嬉しいです♪'
+                title: '紅葉の山',
+                type: 'friend',     // お友達提供
+                provider: '花子ちゃん', // ← ここに提供者名を入力
+                message: '素敵な写真をありがとうございます！'  // ← ここがコメントになります
             },
             // 010.png の情報
             {
-                title: '冬のイルミネーション',
-                type: 'original',   // あきらちゃん作成
-                message: '遊んでくれてありがとう！\n楽しんでもらえて嬉しいです♪'
+                title: '紅葉の山',
+                type: 'friend',     // お友達提供
+                provider: '花子ちゃん', // ← ここに提供者名を入力
+                message: '素敵な写真をありがとうございます！'  // ← ここがコメントになります
             }
         ];
 
@@ -777,8 +767,8 @@
                     option.setAttribute('data-picture', pictureIndex.toString());
                     option.onclick = () => selectPicture(pictureIndex);
                     
-                    // タイトル表示（ホバー時）
-                    option.title = imageTitles[pictureIndex] || `画像 ${pictureIndex + 1}`;
+                    // ホバー時の表示
+                    option.title = `画像 ${pictureIndex + 1}`;
                     
                     // クリア済みかチェックして★マーク追加
                     const isCleared = clearedStages.some(stage => stage.startsWith(`${pictureIndex}-`));
@@ -943,7 +933,7 @@
             ctx.font = 'bold 24px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(`${imageTitles[index] || `画像${index + 1}`}`, 150, 150);
+            ctx.fillText(`画像${index + 1}`, 150, 150);
             
             return canvas.toDataURL();
         }
@@ -1132,9 +1122,17 @@
                 document.getElementById('thank-you-message').textContent = '遊んでくれてありがとう！';
             }
             
-            // クリアした絵柄のタイトルを表示
-            const pictureTitle = imageTitles[currentPicture] || `画像 ${currentPicture + 1}`;
-            document.getElementById('picture-title').textContent = `タイトル：${pictureTitle}`;
+            // 写真提供者を表示
+            const currentImageDetail = imageDetails[currentPicture];
+            let providerText = '';
+            
+            if (currentImageDetail && currentImageDetail.type === 'friend') {
+                providerText = `写真提供者：${currentImageDetail.provider}`;
+            } else {
+                providerText = `写真提供者：あきらちゃん`;
+            }
+            
+            document.getElementById('picture-title').textContent = providerText;
             
             // ステージクリア情報を保存
             const stageKey = `${currentPicture}-${currentSize}`;
