@@ -606,10 +606,7 @@
                 
                 <p><span id="final-moves"></span>回で完成させました</p>
             </div>
-            <div id="unlock-message" class="new-unlock-message" style="display: none;">
-    <h3>🆕 新しい絵柄をゲット！ 🆕</h3>
-    <p id="unlock-title"></p>
-    </div>
+            <!-- アンロックメッセージ削除（全絵柄が最初から利用可能） -->
             <button class="button" onclick="goToPictureSelect()">次のパズルに挑戦</button>
             <button class="button back-button" onclick="goToTitle()">タイトルに戻る</button>
         </div>
@@ -623,7 +620,7 @@
         let puzzleGrid = [];
         let gameImages = [];
         let imagesLoaded = false;
-        let unlockedPictures = [0]; // 最初は001だけアンロック
+        let unlockedPictures = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]; // 全ての絵柄を最初からアンロック
         let clearedStages = []; // クリアしたステージ情報
         
         // ✏️ 画像タイトル（10個に拡張）
@@ -1114,8 +1111,8 @@
                 saveGameData();
             }
             
-            // 新しい絵柄のアンロック判定
-            checkAndUnlockNewPicture();
+           // アンロックシステム無効化（全絵柄が最初から利用可能）
+            // checkAndUnlockNewPicture();
             
             // 紙吹雪アニメーション
             createConfetti();
