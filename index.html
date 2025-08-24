@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ともだちキラキラおもいでパズル</title>
+    <title>ふわふわともだちスライドパズル</title>
     <style>
         * {
             margin: 0;
@@ -478,10 +478,10 @@
     <div class="game-container">
         <!-- タイトル画面 -->
         <div id="title-screen" class="screen active">
-            <h1 class="game-title">🧩 できるんです！パズル 🧩</h1>
-            <p class="subtitle">楽しいスライドパズルゲーム</p>
             <div class="loading-message" id="loading-message">画像を読み込み中...</div>
-            <button class="button" id="start-button" onclick="goToPictureSelect()" style="display: none;">ゲームスタート</button>
+            <div class="title-content">
+                <button class="button start-game-button" id="start-button" onclick="goToPictureSelect()" style="display: none;">ゲームスタート</button>
+            </div>
         </div>
 
         <!-- 絵柄選択画面 -->
