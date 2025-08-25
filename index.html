@@ -203,8 +203,8 @@
             justify-content: start;
         }
 
-        /* 右端にスクロール可能を示すグラデーション */
-        .picture-select::after {
+        /* 右端にスクロール可能を示すグラデーション（条件付き表示） */
+        .picture-select.has-more::before {
             content: '';
             position: absolute;
             top: 0;
@@ -213,10 +213,12 @@
             height: 100%;
             background: linear-gradient(to left, rgba(255,255,255,0.8), transparent);
             pointer-events: none;
+            z-index: 5;
         }
         
         .picture-select {
             position: relative;
+            z-index: 1;
         }
         
         /* スマホ用：右にもっとあることを示す矢印 */
@@ -260,6 +262,7 @@
             touch-action: manipulation;
             flex-shrink: 0;
             position: relative;
+            z-index: 2;
         }
 
         .picture-option:hover, .picture-option.selected {
