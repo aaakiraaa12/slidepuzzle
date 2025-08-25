@@ -34,12 +34,30 @@
             background-attachment: fixed;
         }
 
-        /* その他の画面用の背景 */
+       /* その他の画面用の背景 */
         body.game-background {
             background-image: url('images/game-background.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+        }
+
+        /* デスクトップ用タイトル背景（16:9対応） */
+        @media (min-width: 769px) {
+            body.title-background {
+                background-image: url('images/title-background-desktop.png');
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+            }
+            
+            body.game-background {
+                background-image: url('images/game-background-desktop.png');
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+            }
         }
 
         .game-container {
